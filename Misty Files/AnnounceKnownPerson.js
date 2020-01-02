@@ -55,7 +55,7 @@ function _SendExternalRequest(data) {
 	if (data.Result.ResponseObject.Data === "") {
 		misty.Debug(JSON.stringify(data.Result.ResponseObject.Data));
 		let azureURL1 = misty.Get("azureURL1");
-		misty.Pause(3000)
+		misty.Pause(2000)
 		misty.SendExternalRequest("GET", azureURL1, null, null, "{}", true, true, "TTSOutput.wav", "audio/x-wav");
 	}
 	else {

@@ -95,3 +95,4 @@ obj
 appsettings.json
 local.settings.json
 Azure Files/node_modules/*
+.vscode/*
