@@ -86,9 +86,10 @@ function textToSpeech(accessToken, text, context) {
         .on('response', (response) => {
             if (response.statusCode === 200) {
                 try {
+                    //Streaming is not supported yet in Nodejs for output binding - so using azure storage SDK.
                     var options = {contentSettings:{contentType:'audio/x-wav'}}
                     var blobService = storage.createBlobService(azureStorage, storageKey);
-                    //var blobService = context.subscriptionKey
+                    
                     var writeStream = blobService.createWriteStreamToBlockBlob(
                         "outcontainer", 
                         "TTSOutput.wav", 
