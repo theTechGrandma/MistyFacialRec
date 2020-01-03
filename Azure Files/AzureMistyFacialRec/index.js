@@ -1,7 +1,6 @@
 const rp = require('request-promise');
 const xmlbuilder = require('xmlbuilder');
 const storage = require('azure-storage');
-const ssml = require('ssml');
 
 const azureStorage = process.env["AccountName"];
 const storageKey = process.env["storageKey"];
@@ -15,7 +14,7 @@ module.exports = async function (context, req) {
             status: 400,
             body: "Error With Service Token"
         };
-        //context.bindings.outputBlob = "The message is: " + text;
+
         context.done();
         return;
     };
@@ -55,9 +54,9 @@ function getAccessToken() {
     return rp(options);
 }
 
+//Build the SSML doc to generate the speech.
 function textToSpeech(accessToken, text, context) {
     // Create the SSML request.
-    var ssmlDoc = new ssml();
     let xml_body = xmlbuilder.create('speak')
         .att('version', '1.0')
         .att('xmlns:mstts','https://www.w3.org/2001/mstts')
@@ -75,6 +74,7 @@ function textToSpeech(accessToken, text, context) {
     // Convert the XML into a string to send in the TTS request.
     let body = xml_body.toString();
 
+    // Call API
     let options = {
         method: 'POST',
         baseUrl: 'https://eastus.tts.speech.microsoft.com/',
@@ -89,6 +89,7 @@ function textToSpeech(accessToken, text, context) {
         body: body
     }
 
+    //Save response object to Azure storage.
     let request = rp(options)
         .on('response', (response) => {
             if (response.statusCode === 200) {
