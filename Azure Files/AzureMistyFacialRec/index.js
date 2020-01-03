@@ -1,6 +1,7 @@
 const rp = require('request-promise');
 const xmlbuilder = require('xmlbuilder');
 const storage = require('azure-storage');
+const ssml = require('ssml');
 
 const azureStorage = process.env["AccountName"];
 const storageKey = process.env["storageKey"];
@@ -54,15 +55,21 @@ function getAccessToken() {
     return rp(options);
 }
 
-// Converts text to speech using the input from readline.
 function textToSpeech(accessToken, text, context) {
     // Create the SSML request.
+    var ssmlDoc = new ssml();
     let xml_body = xmlbuilder.create('speak')
         .att('version', '1.0')
+        .att('xmlns:mstts','https://www.w3.org/2001/mstts')
         .att('xml:lang', 'en-us')
         .ele('voice')
         .att('xml:lang', 'en-us')
-        .att('name', 'en-US-Jessa24kRUS') // Choose your voice here.'
+        .att('name', 'en-US-JessaNeural')
+        .ele('mstts:express-as')
+        .att('type','empathy')
+        .ele('prosody')
+        .att('rate', 'medium')
+        .att('volume', '100.0')
         .txt(text)
         .end();
     // Convert the XML into a string to send in the TTS request.
